@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Profile | DARK CITY HUB</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="topbar">
+    <a href="/" class="logo">DARK CITY HUB<span>.</span></a>
+    <a href="{{ url_for('profile', username=user.username) }}">Cancel</a>
+</header>
+
+<main class="profile-page">
+    <section class="upload-box">
+        <h2>Edit your profile</h2>
+
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <p class="notice">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST"
+              enctype="multipart/form-data">
+
+            <label>Biography</label>
+
+            <textarea name="bio"
+                      maxlength="160"
+                      placeholder="Tell people about yourself..."
+                      required>{{ user.bio or "" }}</textarea>
+
+            <label>Profile picture</label>
+
+            <input type="file"
+                   name="avatar"
+                   accept="image/jpeg,image/png,image/webp">
+
+            <button type="submit" class="publish-button">
+                Save changes
+            </button>
+        </form>
+
+        <small>Maximum bio length: 160 characters.</small>
+    </section>
+</main>
+
+</body>
+</html>
+

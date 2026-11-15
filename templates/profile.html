@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@{{ profile_user.username }} | DARK CITY HUB</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="topbar">
+    <a href="/" class="logo">DARK CITY HUB<span>.</span></a>
+    <div class="top-actions">
+        <a href="/">Home</a>
+        <a href="{{ url_for('profile', username=user.username) }}">My Profile</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</header>
+
+<main class="profile-page">
+
+    <section class="profile-info">
+
+<div class="profile-avatar">
+    {% if profile_user.avatar %}
+        <img src="{{ url_for('static', filename='uploads/' + profile_user.avatar) }}"
+             alt="Profile picture"
+             style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+    {% else %}
+        {{ profile_user.username[0]|upper }}
+    {% endif %}
+</div>
+        <div class="profile-details">
+            <h2>@{{ profile_user.username }}</h2>
+<p>{{ profile_user.bio or "No biography yet." }}</p>
+
+{% if profile_user.id == user.id %}
+    <a href="{{ url_for('edit_profile') }}" class="follow-button">
+        Edit Profile
+    </a>
+{% endif %}
+            <div class="profile-stats">
+                <span><strong>{{ posts|length }}</strong> Posts</span>
+                <span><strong>{{ follower_count }}</strong> Followers</span>
+                <span><strong>{{ following_count }}</strong> Following</span>
+            </div>
+
+            {% if profile_user.id == user.id %}
+                <p>Welcome to your DARK CITY HUB profile.</p>
+            {% else %}
+                <p>Welcome to @{{ profile_user.username }}'s profile.</p>
+
+                <form action="{{ url_for('follow', user_id=profile_user.id) }}"
+                      method="POST">
+                    <button class="follow-button" type="submit">
+                        {% if is_following %}
+                            Following
+                        {% else %}
+                            Follow
+                        {% endif %}
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+
+    </section>
+
+    <h3 class="profile-post-heading">YOUR POSTS</h3>
+
+    <section class="profile-grid">
+        {% for post in posts %}
+            <div class="profile-grid-item">
+                {% if post.media_type in ["video", "reel"] %}
+                    <video
+                        class="profile-grid-video autoplay-video"
+                        src="{{ url_for('static', filename='uploads/' + post.image) }}"
+                        muted
+                        loop
+                        playsinline
+                        preload="metadata">
+                    </video>
+                    <span class="profile-video-icon">▶</span>
+                {% else %}
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + post.image) }}"
+                        alt="Post by {{ profile_user.username }}">
+                {% endif %}
+            </div>
+        {% else %}
+            <p class="profile-empty">No posts shared yet.</p>
+        {% endfor %}
+    </section>
+
+    <div class="profile-back">
+        <a href="/">← Back to Home</a>
+    </div>
+
+</main>
+
+<nav class="bottom-nav">
+    <a href="/">⌂</a>
+    <a href="/#feed">⌕</a>
+    <a href="/#create">＋</a>
+    <a href="/#feed">♡</a>
+    <a href="{{ url_for('profile', username=user.username) }}">◎</a>
+</nav>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const videos = document.querySelectorAll(".autoplay-video");
+
+    if (!("IntersectionObserver" in window)) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            const video = entry.target;
+
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+                video.play().catch(() => {});
+            } else {
+                video.pause();
+            }
+        });
+    }, { threshold: [0, 0.6, 1] });
+
+    videos.forEach(video => observer.observe(video));
+});
+</script>
+\n</body>
+</html>
+

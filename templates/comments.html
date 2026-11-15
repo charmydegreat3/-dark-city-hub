@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Comments | DARK CITY HUB</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="top-bar">
+    <a href="{{ url_for('home') }}">← Back</a>
+    <strong>Comments</strong>
+</header>
+
+<main class="comments-page">
+
+    <section class="comment-post">
+        <strong>@{{ post.user.username }}</strong>
+
+        {% if post.caption %}
+            <p>{{ post.caption }}</p>
+        {% endif %}
+
+        {% if post.media_type == 'video' %}
+            <video controls class="post-image">
+                <source src="{{ url_for('static', filename='uploads/' + post.image) }}">
+            </video>
+        {% elif post.image %}
+            <img class="post-image"
+                 src="{{ url_for('static', filename='uploads/' + post.image) }}"
+                 alt="Post">
+        {% endif %}
+    </section>
+
+    <h3>All comments ({{ post.comments|length }})</h3>
+
+    <section class="comments">
+        {% for comment in post.comments %}
+            <div class="comment-item">
+                <a href="{{ url_for('profile', username=comment.user.username) }}"
+                   class="comment-avatar">
+                    {% if comment.user.avatar %}
+                        <img src="{{ url_for('static', filename='uploads/' + comment.user.avatar) }}"
+                             alt="Profile picture">
+                    {% else %}
+                        {{ comment.user.username[0]|upper }}
+                    {% endif %}
+                </a>
+
+                <div class="comment-content">
+                    <a href="{{ url_for('profile', username=comment.user.username) }}">
+                        <strong>@{{ comment.user.username }}</strong>
+                    </a>
+                    <span>{{ comment.content }}</span>
+                </div>
+            </div>
+        {% else %}
+            <p>No comments yet. Start the conversation!</p>
+        {% endfor %}
+    </section>
+
+    <form action="{{ url_for('comment', post_id=post.id) }}" method="POST">
+        <input type="text" name="content"
+               placeholder="Write a comment..."
+               maxlength="300" required>
+        <button type="submit">Comment</button>
+    </form>
+
+</main>
+
+<script>
+document.querySelector(".comments-page form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const form = this;
+    const input = form.querySelector("input[name='content']");
+    const button = form.querySelector("button");
+
+    if (!input.value.trim()) return;
+
+    button.disabled = true;
+
+    try {
+        const response = await fetch(form.action, {
+            method: "POST",
+            body: new FormData(form),
+            headers: {"X-Requested-With": "XMLHttpRequest"}
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.error || "Could not add comment.");
+
+        const item = document.createElement("div");
+        item.className = "comment-item";
+
+        const avatar = document.createElement("div");
+        avatar.className = "comment-avatar";
+        avatar.textContent = data.username.charAt(0).toUpperCase();
+
+        const content = document.createElement("div");
+        content.className = "comment-content";
+
+        const username = document.createElement("strong");
+        username.textContent = "@" + data.username;
+
+        const message = document.createElement("span");
+        message.textContent = " " + data.content;
+
+        content.append(username, message);
+        item.append(avatar, content);
+
+        const comments = document.querySelector(".comments");
+        comments.append(item);
+
+        const heading = document.querySelector(".comments-page h3");
+        const count = parseInt(heading.textContent.match(/\d+/)?.[0] || "0");
+        heading.textContent = "All comments (" + (count + 1) + ")";
+
+        input.value = "";
+    } catch (error) {
+        alert(error.message);
+    } finally {
+        button.disabled = false;
+    }
+});
+</script>
+\n</body>
+</html>

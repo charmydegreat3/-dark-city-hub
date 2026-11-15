@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Messages | DARK CITY HUB</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="topbar">
+    <a href="/" class="logo">DARK CITY HUB<span>.</span></a>
+    <div class="top-actions">
+        <a href="/">Home</a>
+        <a href="{{ url_for('profile', username=user.username) }}">Profile</a>
+    </div>
+</header>
+
+<main class="messages-page">
+    <h2>Messages</h2>
+    <p>Connect privately with people on DARK CITY HUB.</p>
+
+    {% with notices = get_flashed_messages() %}
+        {% for notice in notices %}
+            <p class="notice">{{ notice }}</p>
+        {% endfor %}
+    {% endwith %}
+
+    <h3>Your conversations</h3>
+
+    {% for person, latest in conversations %}
+        <a class="message-person"
+           href="{{ url_for('chat', username=person.username) }}">
+            <div class="avatar">{{ person.username[0]|upper }}</div>
+            <div>
+                <strong>@{{ person.username }}</strong>
+                <p>
+                    {% if latest.sender_id == user.id %}You: {% endif %}
+                    {{ latest.content }}
+                </p>
+            </div>
+        </a>
+    {% else %}
+        <p>No conversations yet. Start one below!</p>
+    {% endfor %}
+
+    <h3>Discover people</h3>
+
+    {% for person in people %}
+        <a class="message-person"
+           href="{{ url_for('chat', username=person.username) }}">
+            <div class="avatar">{{ person.username[0]|upper }}</div>
+            <strong>@{{ person.username }}</strong>
+            <span>Message →</span>
+        </a>
+    {% else %}
+        <p>No other users registered yet.</p>
+    {% endfor %}
+
+    <p><a href="/">← Back home</a></p>
+</main>
+
+</body>
+</html>

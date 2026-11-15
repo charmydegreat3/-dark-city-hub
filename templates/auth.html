@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DARK CITY HUB | Welcome</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-body">
+    <main class="auth-card">
+        <h1 class="logo">DARK CITY HUB<span>.</span></h1>
+
+        <p class="subtitle">
+            {% if mode == "register" %}
+                Join the community. Share your world.
+            {% else %}
+                Welcome back. Your world awaits.
+            {% endif %}
+        </p>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST">
+            <input name="username" placeholder="Username" minlength="3" maxlength="30" required>
+            <input name="password" type="password" placeholder="Password (at least 8 characters)" minlength="8" required>
+            <button type="submit">
+                {% if mode == "register" %}Create Account{% else %}Login{% endif %}
+            </button>
+        </form>
+
+        <p class="switch">
+            {% if mode == "register" %}
+                Already a member? <a href="{{ url_for('login') }}">Login</a>
+            {% else %}
+                New to DARK CITY HUB? <a href="{{ url_for('register') }}">Create account</a>
+            {% endif %}
+        </p>
+    </main>
+</body>
+</html>

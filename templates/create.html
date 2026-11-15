@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DARK CITY HUB | Create</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="topbar">
+    <h2>DARK CITY HUB</h2>
+    <a href="{{ url_for('home') }}">Home</a>
+</header>
+
+<main class="create-page">
+    <h2>Create something new</h2>
+    <p>Share a moment with your community.</p>
+
+    <form action="{{ url_for('upload') }}"
+          method="POST"
+          enctype="multipart/form-data">
+
+        <label for="media_type">Choose what to create</label>
+        <select id="media_type" name="media_type">
+            <option value="photo">Photo</option>
+            <option value="video">Video</option>
+            <option value="reel">Reel</option>
+        </select>
+
+        <label for="image" id="file-label">Choose a photo</label>
+        <input type="file" id="image" name="image"
+               accept="image/jpeg,image/png,image/webp" required>
+
+        <label for="caption">Write a caption</label>
+        <textarea id="caption" name="caption"
+                  maxlength="500"
+                  placeholder="What's happening today?"></textarea>
+
+        <button type="submit">Share Post</button>
+    </form>
+</main>
+
+<script>
+const mediaType = document.getElementById("media_type");
+const fileInput = document.getElementById("image");
+const fileLabel = document.getElementById("file-label");
+
+function updateMediaInput() {
+    if (mediaType.value === "photo") {
+        fileLabel.textContent = "Choose a photo";
+        fileInput.accept = "image/jpeg,image/png,image/webp";
+    } else if (mediaType.value === "video") {
+        fileLabel.textContent = "Choose a video";
+        fileInput.accept = "video/mp4,video/webm";
+    } else {
+        fileLabel.textContent = "Choose a Reel";
+        fileInput.accept = "video/mp4,video/webm";
+    }
+
+    fileInput.value = "";
+}
+
+mediaType.addEventListener("change", updateMediaInput);
+</script>
+
+</body>
+</html>

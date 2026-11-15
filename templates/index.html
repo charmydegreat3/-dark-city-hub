@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DARK CITY HUB | Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="topbar">
+    <h1 class="logo">DARK CITY HUB<span>.</span></h1>
+
+<a href="{{ url_for('messages') }}" title="Messages" aria-label="Messages">
+    <svg width="25" height="25" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+         stroke-linejoin="round">
+        <path d="M21 11.5a8.5 8.5 0 0 1-12.9 7.3L3 21l2.2-5.1A8.5 8.5 0 1 1 21 11.5Z"/>
+    </svg>
+</a>    <div class="top-actions">
+        <a href="/">Home</a>
+        <a href="{{ url_for('profile', username=user.username) }}">Profile</a>
+        <a href="{{ url_for('create') }}">Create</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</header>
+
+<main class="layout">
+        <section class="city-banner">
+            <img src="{{ url_for('static', filename='images/dark-city-hub-banner.png') }}"
+                 alt="Dark City Hub Nairobi night skyline">
+            <div class="city-banner-overlay">
+                <h2>DARK CITY HUB</h2>
+                <p>CONNECT • SHARE • BELONG</p>
+                <span>🌙 Nairobi, Kenya</span>
+            </div>
+        </section>
+
+    <section class="feed">
+
+        <div class="welcome">
+            <p class="eyebrow">YOUR SOCIAL SPACE</p>
+            <h2>Welcome, @{{ user.username }} 👋</h2>
+            <p>Connect. Share. Discover.</p>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <p class="notice">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        
+
+        <h3 class="feed-heading" id="feed">Explore your feed</h3>
+
+        {% if posts %}
+            {% for post in posts %}
+                <article class="post">
+
+                    <div class="post-header">
+                        <div class="avatar">
+                            {{ post.user.username[0]|upper }}
+                        </div>
+                        <a href="{{ url_for('profile', username=post.user.username) }}"><strong>@{{ post.user.username }}</strong></a>
+                    </div>
+
+                    {% if post.media_type in ["video", "reel"] %}
+                        <video class="post-image autoplay-video" controls muted loop playsinline preload="metadata">
+                            <source src="{{ url_for('static', filename='uploads/' + post.image) }}" type="video/mp4">
+                            Your browser does not support video.
+                        </video>
+                    {% else %}
+                        <img class="post-image"
+                            src="{{ url_for('static', filename='uploads/' + post.image) }}"
+                            alt="Post photo">
+                    {% endif %}
+
+                    {% if post.caption %}
+                        <div class="post-caption">
+                            <a href="{{ url_for('profile', username=post.user.username) }}"><strong>@{{ post.user.username }}</strong></a>
+                            {{ post.caption }}
+                        </div>
+                    {% endif %}
+
+                    <div class="post-footer">
+                        <form action="{{ url_for('like', post_id=post.id) }}"
+                              method="POST">
+                            <button type="submit">
+                                {% if post.id in liked_ids %}
+                                    ♥ Unlike
+                                {% else %}
+                                    ♡ Like
+                                {% endif %}
+                            </button>
+                        </form>
+
+                        <span>{{ post.likes|length }} likes</span>
+                        <a class="comment-count" href="{{ url_for('comments', post_id=post.id) }}">{{ post.comments|length }} comments</a>
+                    </div>
+
+
+
+                </article>
+            {% endfor %}
+        {% else %}
+            <div class="empty-feed">
+                <h3>Your feed is waiting!</h3>
+                <p>Be the first to share a moment.</p>
+            </div>
+        {% endif %}
+
+    </section>
+
+    <aside class="sidebar">
+        <div class="profile-box">
+            <div class="avatar large">
+                {{ user.username[0]|upper }}
+            </div>
+            <div>
+                <a href="{{ url_for('profile', username=user.username) }}"><strong>@{{ user.username }}</strong></a>
+                <p>Your DARK CITY HUB profile</p>
+            </div>
+        </div>
+
+        <h3>Discover</h3>
+        <p>Find people, share moments and build connections.</p>
+
+        <a class="logout-link" href="{{ url_for('logout') }}">
+            Sign out
+        </a>
+    </aside>
+</main>
+
+<nav class="bottom-nav">
+    <a href="/">⌂</a>
+    <a href="{{ url_for('search') }}" aria-label="Search" title="Search">
+        <svg width="24" height="24" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+        </svg>
+    </a>
+    <a href="{{ url_for('create') }}" aria-label="Create post" title="Create post">＋</a>
+    <a href="{{ url_for('reels') }}" aria-label="Reels" title="Reels">▶</a>
+    <a href="#feed">♡</a>
+    <a href="{{ url_for('profile', username=user.username) }}">◎</a>
+</nav>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const videos = document.querySelectorAll(".autoplay-video");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            const video = entry.target;
+
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+                video.play().catch(() => {});
+            } else {
+                video.pause();
+            }
+        });
+    }, { threshold: [0, 0.6, 1] });
+
+    videos.forEach(video => observer.observe(video));
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".post").forEach(post => {
+
+        const likeForm = post.querySelector(".post-footer form");
+        const commentForm = post.querySelector("form[action*='/comment/']");
+
+        if (likeForm) {
+            likeForm.addEventListener("submit", async function(e) {
+                e.preventDefault();
+
+                const button = likeForm.querySelector("button");
+                const count = post.querySelector(".post-footer span");
+
+                button.disabled = true;
+
+                try {
+                    const response = await fetch(likeForm.action, {
+                        method: "POST",
+                        headers: {"X-Requested-With": "XMLHttpRequest"}
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) throw new Error(data.error || "Like failed");
+
+                    button.textContent = data.liked ? "♥ Unlike" : "♡ Like";
+                    count.textContent = data.likes_count + " likes";
+                } catch (error) {
+                    alert(error.message);
+                } finally {
+                    button.disabled = false;
+                }
+            });
+        }
+
+        if (commentForm) {
+            commentForm.addEventListener("submit", async function(e) {
+                e.preventDefault();
+
+                const input = commentForm.querySelector("input[name='content']");
+                const button = commentForm.querySelector("button");
+                const content = input.value.trim();
+
+                if (!content) return;
+
+                button.disabled = true;
+
+                try {
+                    const response = await fetch(commentForm.action, {
+                        method: "POST",
+                        body: new FormData(commentForm),
+                        headers: {"X-Requested-With": "XMLHttpRequest"}
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) throw new Error(data.error || "Comment failed");
+
+                    const comments = post.querySelector(".comments");
+                    const item = document.createElement("div");
+                    item.className = "comment-item";
+
+                    const avatar = document.createElement("div");
+                    avatar.className = "comment-avatar";
+                    avatar.textContent = data.username.charAt(0).toUpperCase();
+
+                    const textBox = document.createElement("div");
+                    textBox.className = "comment-content";
+
+                    const username = document.createElement("strong");
+                    username.textContent = "@" + data.username;
+
+                    const message = document.createElement("span");
+                    message.textContent = " " + data.content;
+
+                    textBox.append(username, message);
+                    item.append(avatar, textBox);
+                    comments.append(item);
+
+                    const commentCount = post.querySelector(".post-footer span:last-child");
+                    const current = parseInt(commentCount.textContent) || 0;
+                    commentCount.textContent = (current + 1) + " comments";
+
+                    input.value = "";
+                } catch (error) {
+                    alert(error.message);
+                } finally {
+                    button.disabled = false;
+                }
+            });
+        }
+    });
+});
+</script>
+\n</body>
+</html>

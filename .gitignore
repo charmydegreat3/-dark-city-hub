@@ -1,0 +1,17 @@
+instance/
+static/uploads/
+__pycache__/
+*.pyc
+*.backup
+*.bak
+*.db
+app_backup*.py
+app_before_messages.py
+app_error_backup.py
+app.py.likes-backup
+app.py.comments-backup
+static/style_backup.css
+static/style.css.auth-backup
+tall openjdk-21 git -y
+templates/*backup*
+*.pre-github-backup

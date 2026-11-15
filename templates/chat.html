@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chat with @{{ other.username }} | DARK CITY HUB</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="topbar">
+    <a href="/" class="logo">DARK CITY HUB<span>.</span></a>
+    <div class="top-actions">
+        <a href="{{ url_for('messages') }}">Inbox</a>
+    </div>
+</header>
+
+<main class="chat-page">
+    <div class="chat-heading">
+        <a href="{{ url_for('messages') }}">←</a>
+        <div class="avatar">{{ other.username[0]|upper }}</div>
+        <strong>@{{ other.username }}</strong>
+    </div>
+
+    <section class="chat-messages" id="chat-messages">
+        {% for msg in conversation %}
+            <div class="chat-bubble {% if msg.sender_id == user.id %}sent{% else %}received{% endif %}">
+                <p>{{ msg.content }}</p>
+                <small>{{ msg.created_at.strftime('%d %b, %H:%M') }}</small>
+            </div>
+        {% else %}
+            <p class="chat-empty">Start your conversation!</p>
+        {% endfor %}
+    </section>
+
+    <form method="POST" class="chat-form">
+        <input type="text" name="content"
+               placeholder="Write a message..."
+               maxlength="1000" required>
+        <button type="submit">Send</button>
+    </form>
+</main>
+
+<script>
+const chat = document.getElementById("chat-messages");
+chat.scrollTop = chat.scrollHeight;
+</script>
+
+</body>
+</html>
