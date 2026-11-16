@@ -13,9 +13,12 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-app.config["SECRET_KEY"] = os.environ.get(
-    "SECRET_KEY", "local-development-only-change-this"
-)
+secret_key = os.environ.get("SECRET_KEY")
+
+if not secret_key and os.environ.get("APP_ENV") == "production":
+    raise RuntimeError("SECRET_KEY must be set in production")
+
+app.config["SECRET_KEY"] = secret_key or "local-development-only-change-this"
 os.makedirs(app.instance_path, exist_ok=True)
 
 database_path = os.environ.get(
