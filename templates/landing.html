@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>DARK CITY HUB | Connect. Share. Belong.</title>
+
+    <meta name="description"
+          content="Welcome to DARK CITY HUB, a social community where you can connect with people, share posts, discover content and build connections.">
+
+    <meta name="robots" content="index, follow">
+
+    <link rel="canonical"
+          href="https://charmy900.pythonanywhere.com/">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            background: #10101a;
+            color: white;
+            padding-bottom: 0;
+        }
+
+        .landing-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 8%;
+            background: #151522;
+        }
+
+        .landing-logo {
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .landing-logo span {
+            color: #e1306c;
+        }
+
+        .landing-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .landing-links a {
+            color: white;
+            font-weight: 600;
+        }
+
+        .landing-hero {
+            min-height: 570px;
+            padding: 90px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background:
+                linear-gradient(rgba(10,10,20,.76), rgba(10,10,20,.92)),
+                url("{{ url_for('static', filename='images/dark-city-hub-banner.png') }}")
+                center/cover;
+        }
+
+        .hero-content {
+            max-width: 750px;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(38px, 8vw, 68px);
+            margin: 0 0 20px;
+            font-weight: 900;
+        }
+
+        .hero-content h1 span {
+            color: #e1306c;
+        }
+
+        .hero-content p {
+            color: #dedee8;
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        .landing-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 35px;
+        }
+
+        .landing-button {
+            display: inline-block;
+            padding: 15px 28px;
+            border-radius: 9px;
+            font-weight: 700;
+            background: linear-gradient(120deg, #e1306c, #833ab4);
+            color: white;
+        }
+
+        .landing-button.secondary {
+            background: transparent;
+            border: 1px solid #aaa;
+        }
+
+        .landing-features {
+            padding: 65px 8%;
+            text-align: center;
+        }
+
+        .landing-features h2 {
+            font-size: 30px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 20px;
+            margin-top: 35px;
+        }
+
+        .feature-card {
+            background: #1b1b2a;
+            padding: 28px 20px;
+            border-radius: 13px;
+            border: 1px solid #303044;
+        }
+
+        .feature-card h3 {
+            color: #e88bb2;
+        }
+
+        .feature-card p {
+            color: #c5c5d0;
+            line-height: 1.6;
+        }
+
+        .landing-footer {
+            padding: 25px;
+            text-align: center;
+            color: #aaa;
+            border-top: 1px solid #303044;
+        }
+
+        @media(max-width: 600px) {
+            .landing-nav {
+                padding: 18px;
+            }
+
+            .landing-logo {
+                font-size: 19px;
+            }
+
+            .landing-links {
+                gap: 12px;
+                font-size: 13px;
+            }
+
+            .landing-hero {
+                min-height: 500px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="landing-nav">
+    <div class="landing-logo">
+        DARK CITY HUB<span>.</span>
+    </div>
+
+    <div class="landing-links">
+        <a href="{{ url_for('login') }}">Log In</a>
+        <a href="{{ url_for('register') }}">Join</a>
+    </div>
+</nav>
+
+<section class="landing-hero">
+    <div class="hero-content">
+        <h1>YOUR WORLD.<br><span>YOUR CONNECTIONS.</span></h1>
+
+        <p>
+            Welcome to DARK CITY HUB.
+            Connect with people, share your moments,
+            discover content and be part of a growing community.
+        </p>
+
+        <div class="landing-buttons">
+            <a class="landing-button"
+               href="{{ url_for('register') }}">
+                JOIN THE COMMUNITY
+            </a>
+
+            <a class="landing-button secondary"
+               href="{{ url_for('login') }}">
+                LOG IN
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="landing-features">
+    <h2>ONE COMMUNITY. MANY CONNECTIONS.</h2>
+
+    <div class="feature-grid">
+        <div class="feature-card">
+            <h3>Connect</h3>
+            <p>Discover people and build new connections.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>Share</h3>
+            <p>Share your moments, pictures and thoughts.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>Discover</h3>
+            <p>Explore posts and discover what's happening.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>Communicate</h3>
+            <p>Stay connected through private conversations.</p>
+        </div>
+    </div>
+</section>
+
+<footer class="landing-footer">
+    © 2026 DARK CITY HUB. CONNECT • SHARE • BELONG.
+</footer>
+
+</body>
+</html>

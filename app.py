@@ -126,7 +126,7 @@ def home():
     user = get_logged_in_user()
 
     if not user:
-        return redirect(url_for("login"))
+        return render_template("landing.html")
 
     posts = Post.query.order_by(Post.id.desc()).all()
 
