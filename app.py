@@ -652,6 +652,7 @@ def create():
 @app.route("/sitemap.xml")
 def sitemap():
     pages = [
+        url_for("home", _external=True),
         url_for("login", _external=True),
         url_for("register", _external=True),
     ]
