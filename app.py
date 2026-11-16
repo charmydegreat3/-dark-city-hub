@@ -647,5 +647,26 @@ def create():
     return render_template("create.html", user=user)
 
 
+
+
+@app.route("/sitemap.xml")
+def sitemap():
+    pages = [
+        url_for("login", _external=True),
+        url_for("register", _external=True),
+    ]
+
+    xml = ['<?xml version="1.0" encoding="UTF-8"?>',
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+
+    for page in pages:
+        xml.append(f"<url><loc>{page}</loc></url>")
+
+    xml.append("</urlset>")
+
+    return "\n".join(xml), 200, {
+        "Content-Type": "application/xml; charset=utf-8"
+    }
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)
