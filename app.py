@@ -16,7 +16,19 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get(
     "SECRET_KEY", "local-development-only-change-this"
 )
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///socially.db"
+os.makedirs(app.instance_path, exist_ok=True)
+
+database_path = os.environ.get(
+    "DATABASE_PATH",
+    os.path.join(app.instance_path, "socially.db")
+)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + database_path
+
+app.config["UPLOAD_FOLDER"] = os.environ.get(
+    "UPLOAD_FOLDER",
+    os.path.join(app.root_path, "static", "uploads")
+)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024
 
@@ -309,9 +321,7 @@ def upload():
 
     filename = f"{uuid.uuid4().hex}.{extension}"
 
-    upload_folder = os.path.join(
-        app.root_path, "static", "uploads"
-    )
+    upload_folder = app.config["UPLOAD_FOLDER"]
     os.makedirs(upload_folder, exist_ok=True)
 
     media.save(os.path.join(upload_folder, filename))
@@ -436,9 +446,7 @@ def edit_profile():
             extension = original.rsplit(".", 1)[1].lower()
             filename = f"{uuid.uuid4().hex}.{extension}"
 
-            upload_folder = os.path.join(
-                app.root_path, "static", "uploads"
-            )
+            upload_folder = app.config["UPLOAD_FOLDER"]
             os.makedirs(upload_folder, exist_ok=True)
 
             avatar.save(os.path.join(upload_folder, filename))
